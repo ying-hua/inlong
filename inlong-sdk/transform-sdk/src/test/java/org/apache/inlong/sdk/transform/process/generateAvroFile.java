@@ -39,7 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MyTest {
+public class generateAvroFile {
 
     static String schemaString = "{\n" +
             "  \"namespace\": \"test\",\n" +
@@ -83,9 +83,9 @@ public class MyTest {
             "    }\n" +
             "  ]\n" +
             "}";
+
     public static void main(String[] args) throws Exception {
-        // createAvroFile("inlong-sdk/transform-sdk/src/test/java/org/apache/inlong/sdk/transform/process/test.avro");
-        readAvroFile("inlong-sdk/transform-sdk/src/test/java/org/apache/inlong/sdk/transform/process/test.avro");
+        createAvroFile("inlong-sdk/transform-sdk/src/test/java/org/apache/inlong/sdk/transform/process/test.avro");
     }
 
     public static void createAvroFile(String filePath) throws Exception {
@@ -127,44 +127,5 @@ public class MyTest {
         dataFileWriter.create(schema, outputFile);
         dataFileWriter.append(record);
         dataFileWriter.close();
-    }
-
-    public static void readAvroFile(String filePath) throws Exception {
-        File file = new File(filePath);
-        byte[] bytes = Files.readAllBytes(Paths.get(filePath));
-        System.out.println(Base64.getEncoder().encodeToString(bytes));
-        InputStream inputStream = new ByteArrayInputStream(bytes);
-        // 创建一个DataFileStream来读取Avro数据
-        DataFileStream<GenericRecord> dataFileStream = new DataFileStream<>(inputStream, new GenericDatumReader<>());
-
-        for (GenericRecord record : dataFileStream) {
-            System.out.println("Record: " + record.toString());
-
-            String sid = record.get("sid").toString();
-            long packageID = (Long) record.get("packageID");
-
-            @SuppressWarnings("unchecked")
-            List<GenericRecord> msgs = (List<GenericRecord>) record.get("msgs");
-
-            for (GenericRecord msg : msgs) {
-                ByteBuffer msgBuffer = (ByteBuffer) msg.get("msg");
-                byte[] msgBytes = new byte[msgBuffer.remaining()];
-                msgBuffer.get(msgBytes);
-                long msgTime = (Long) msg.get("msgTime");
-                Map<String, String> extinfo = (Map<String, String>) msg.get("extinfo");
-                for (Object key : extinfo.keySet()) {
-                    System.out.println(key.getClass());
-                }
-                System.out.println("SID: " + sid);
-                System.out.println("Package ID: " + packageID);
-                System.out.println("Message: " + new String(msgBytes));
-                System.out.println("Message Time: " + msgTime);
-                System.out.println("Extinfo: " + extinfo);
-                System.out.println(extinfo.keySet());
-                List<String> keys = new ArrayList<>(extinfo.keySet());
-            }
-        }
-
-        dataFileStream.close();
     }
 }

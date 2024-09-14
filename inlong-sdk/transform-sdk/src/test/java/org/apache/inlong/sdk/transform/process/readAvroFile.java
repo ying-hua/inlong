@@ -39,7 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MyTest {
+public class readAvroFile {
 
     static String schemaString = "{\n" +
             "  \"namespace\": \"test\",\n" +
@@ -102,16 +102,16 @@ public class MyTest {
         message1.put("msg", ByteBuffer.wrap("Apple".getBytes(StandardCharsets.UTF_8)));
         message1.put("msgTime", 10011001L);
         Map<String, String> extinfo = new HashMap<>();
-        extinfo.put("v1", "value1");
-        extinfo.put("v2", "value2");
+        extinfo.put("key1", "key1");
+        extinfo.put("key2", "value1");
         message1.put("extinfo", extinfo);
 
         GenericRecord message2 = new GenericData.Record(messageSchema);
         message2.put("msg", ByteBuffer.wrap("Banana".getBytes(StandardCharsets.UTF_8)));
         message2.put("msgTime", 20022002L);
         extinfo = new HashMap<>();
-        extinfo.put("v3", "value3");
-        extinfo.put("v4", "value4");
+        extinfo.put("key1", "key2");
+        extinfo.put("key2", "value2");
         message2.put("extinfo", extinfo);
 
         messages.add(message1);
